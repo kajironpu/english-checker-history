@@ -62,7 +62,7 @@ module.exports = async function (req, res) {
     return res.status(200).json({ correctness, explanation });
 
   } catch (err) {
-    console.error("Error:", err);
-    return res.status(500).json({ error: "内部エラー" });
+    console.error("サーバーエラー:", err);
+    return res.status(500).json({ error: "内部エラー", details: err.message });
   }
 };
