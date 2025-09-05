@@ -1,3 +1,5 @@
+// api/generate-quiz.js
+
 export default async function handler(req, res) {
   const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
   const MODEL_NAME = "mistral-ai/mistral-medium-2505"; // 使用するAIモデル名
