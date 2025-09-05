@@ -1,1 +1,11 @@
-"@azure/ai-inference": "^1.0.0"
+{
+  "name": "english-checker-history",
+  "version": "1.0.0",
+  "engines": {
+    "node": "22.x"
+  },
+  "dependencies": {
+    "@azure/ai-inference": "^1.0.0",
+    "@azure/core-auth": "^1.5.0"
+  }
+}
