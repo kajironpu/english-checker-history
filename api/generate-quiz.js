@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   const MODEL_NAME = "mistral-ai/mistral-medium-2505"; // 使用するAIモデル名
 
   // クイズ生成のためのプロンプトを定義
-  const prompt = `あなたは歴史の先生です。江戸時代の重要な出来事に関する一問一答問題を1問だけ作成してください。
+  const prompt = `あなたは中学の歴史の先生です。江戸時代の重要な出来事に関する一問一答問題を1問だけ作成してください。ただし、毎回できるだけランダムで。
 形式:
 問題: <問題文>
 答え: <答え>
