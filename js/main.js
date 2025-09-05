@@ -1,3 +1,5 @@
+// public/js/main.js
+
 // --- 問題と答えを保持する変数 ---
 let currentQuiz = {
   question: "",
@@ -13,7 +15,7 @@ async function loadQuiz() {
 
   try {
     // APIを呼び出して、AIにクイズを生成させる
-    const response = await fetch("/api/check");
+    const response = await fetch("/api/generate-quiz"); 
     if (!response.ok) {
       throw new Error("APIからクイズを取得できませんでした。");
     }
@@ -34,7 +36,10 @@ async function loadQuiz() {
 
 // --- 結果クリア ---
 function clearResult() {
-  document.getElementById("result").textContent = "";
+  const resultEl = document.getElementById("result");
+  if (resultEl) {
+    resultEl.textContent = "";
+  }
 }
 
 // --- 回答チェック処理 ---
