@@ -1,4 +1,3 @@
-// api/check-answer.js
 const { OpenAI } = require('openai');
 
 module.exports = async function (req, res) {
@@ -10,12 +9,14 @@ module.exports = async function (req, res) {
     return res.status(200).end();
   }
 
-  const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-  const baseURL = "https://models.inference.ai.azure.com";
-  const modelName = "Phi-3-medium";
+  // Use a more descriptive environment variable for the API key
+  const AZURE_OPENAI_API_KEY = process.env.AZURE_OPENAI_API_KEY;
+  const baseURL = process.env.AZURE_OPENAI_BASE_URL; // Get base URL from environment
+  const modelName = process.env.AZURE_OPENAI_MODEL_NAME; // Get model name from environment
 
-  if (!GITHUB_TOKEN) {
-    return res.status(500).json({ error: "GITHUB_TOKEN が設定されていません" });
+  // Check if all necessary environment variables are set
+  if (!AZURE_OPENAI_API_KEY || !baseURL || !modelName) {
+    return res.status(500).json({ error: "必要な環境変数が設定されていません (AZURE_OPENAI_API_KEY, AZURE_OPENAI_BASE_URL, AZURE_OPENAI_MODEL_NAME)" });
   }
 
   let body;
@@ -47,7 +48,7 @@ module.exports = async function (req, res) {
   try {
     const openai = new OpenAI({
       baseURL,
-      apiKey: GITHUB_TOKEN,
+      apiKey: AZURE_OPENAI_API_KEY,
     });
 
     const response = await openai.chat.completions.create({
