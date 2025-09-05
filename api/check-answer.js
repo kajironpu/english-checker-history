@@ -6,7 +6,6 @@ export default async function handler(req, res) {
 
   const { userText, question, correctAnswer } = req.body;
 
-  // 修正されたAIへのプロンプトを定義
   const prompt = `あなたは歴史の先生です。以下の一問一答クイズの答え合わせと解説をしてください。
 回答は日本語で、以下の形式でお願いします。
 正誤: <正解または不正解>
