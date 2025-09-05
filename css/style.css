@@ -1,37 +1,74 @@
+/* --- 全体設定 --- */
 body {
   font-family: Arial, sans-serif;
-  padding: 20px;
+  margin: 0;
+  padding: 10px;
   background: #f0f0f0;
+  font-size: 16px;
+  line-height: 1.4;
+  box-sizing: border-box;
 }
 
 h2 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
+  font-size: 1.6rem;
+}
+
+/* --- 添削結果カード --- */
+.result-card {
+  position: sticky;
+  top: 10px;
+  background: #e3f2fd;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-size: 0.9rem;
+  z-index: 10;
+}
+
+/* --- 問題と入力欄 --- */
+.problem-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+#problem {
+  flex: 1;
+  font-weight: bold;
+  background: #fff3cd;
+  padding: 6px 8px;
+  border-radius: 5px;
+  min-width: 100px;
+  font-size: 0.95rem;
 }
 
 textarea {
-  width: 100%;
-  padding: 10px;
-  font-size: 14px;
-  margin-bottom: 10px;
+  flex: 1;
+  padding: 8px;
+  font-size: 1rem;
   border-radius: 5px;
   border: 1px solid #ccc;
+  resize: vertical;
+  min-height: 40px;
 }
 
+/* --- ボタン --- */
 button {
-  padding: 10px 20px;
-  font-size: 14px;
-  margin: 5px;
-  cursor: pointer;
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  margin: 2px 0;
   border-radius: 5px;
   border: none;
   background: #51cf66;
   color: white;
-  transition: background 0.3s;
-}
-
-button:hover:not(:disabled) {
-  background: #40c057;
+  cursor: pointer;
+  flex: 1;
+  text-align: center;
 }
 
 button:disabled {
@@ -39,23 +76,31 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.result {
-  background: #e3f2fd;
-  padding: 15px;
-  border-radius: 8px;
-  margin-top: 15px;
-  display: block;
-  white-space: pre-wrap;
-}
-
+/* --- ボタングループ --- */
 .button-group {
-  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 5px;
 }
 
-.highlight {
-  background: #fff3cd;
-}
-
-p {
-  margin-bottom: 10px;
+/* --- スマホ対応 --- */
+@media (max-width: 600px) {
+  h2 {
+    font-size: 1.4rem;
+  }
+  .problem-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  textarea {
+    min-height: 60px;
+  }
+  .button-group {
+    flex-direction: column;
+  }
+  .result-card {
+    font-size: 0.88rem;
+    padding: 8px;
+  }
 }

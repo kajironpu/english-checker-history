@@ -1,34 +1,35 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>英作文・添削ツール</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>英作文・添削ツール</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <h2>英作文・添削ツール</h2>
 
-<h2>英作文・添削ツール</h2>
+  <!-- 問題と入力欄を横並び -->
+  <div class="problem-row">
+    <p id="problem">読み込み中...</p>
+    <textarea id="userAnswer" placeholder="ここに英語で答えてください" rows="2"></textarea>
+  </div>
 
-<h3>問題</h3>
-<p id="problem">読み込み中...</p>
+  <!-- ボタン群 -->
+  <div class="button-group">
+    <button id="voiceInputBtn">🎤 音声入力</button>
+    <button id="checkBtn">添削する</button>
+    <button id="nextBtn">次の問題</button>
+  </div>
 
-<h3>あなたの答え</h3>
-<textarea id="userAnswer" placeholder="ここに英語で答えてください" rows="2"></textarea>
-<button id="voiceInputBtn">🎤 音声入力</button>
+  <!-- 添削結果カード -->
+  <div class="result-card">
+    <p><strong>添削後:</strong> <span id="corrected"></span></p>
+    <p><strong>スコア:</strong> <span id="score"></span></p>
+    <p><strong>アドバイス:</strong> <span id="advice"></span></p>
+  </div>
 
-<div class="button-group">
-  <button id="checkBtn">添削する</button>
-  <button id="nextBtn">次の問題</button>
-  <button id="readBtn">🔊 読み上げ</button>
-</div>
-
-<div class="result">
-  <p><strong>添削後:</strong> <span id="corrected"></span></p>
-  <p><strong>スコア:</strong> <span id="score"></span></p>
-  <p><strong>アドバイス:</strong> <span id="advice"></span></p>
-</div>
-
-<script src="js/main.js"></script>
+  <!-- JS 読み込み -->
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
