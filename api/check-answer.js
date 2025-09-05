@@ -1,5 +1,3 @@
-
-
 // api/check-answer.js
 
 const { ModelClient, isUnexpected } = require("@azure-rest/ai-inference");
@@ -65,6 +63,6 @@ module.exports = async function (req, res) {
 
   } catch (err) {
     console.error("サーバーエラー:", err);
-    return res.status(500).json({ error: "内部エラー", details: err.message });
+    return res.status(500).json({ error: "内部エラー", message: err.message });
   }
 };
