@@ -1,8 +1,11 @@
 // api/check-answer.js
+import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
+import { AzureKeyCredential } from "@azure/core-auth";
 
 export default async function handler(req, res) {
   const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-  const MODEL_NAME = "mistral-ai/mistral-medium-2505";
+  const endpoint = "https://models.github.ai/inference";
+  const modelName = "microsoft/Phi-4";
 
   const { userText, question, correctAnswer } = req.body;
 
@@ -17,34 +20,29 @@ export default async function handler(req, res) {
 `;
 
   try {
-    const response = await fetch("https://models.github.ai/inference/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${GITHUB_TOKEN}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: MODEL_NAME,
+    const client = ModelClient(endpoint, new AzureKeyCredential(GITHUB_TOKEN));
+
+    const response = await client.path("/chat/completions").post({
+      body: {
+        model: modelName,
         messages: [
           { role: "system", content: "中学生向けに分かりやすく、歴史の先生として答え合わせと解説をしてください。" },
           { role: "user", content: prompt }
         ],
         temperature: 0.5,
         max_tokens: 300
-      })
+      }
     });
 
-    if (!response.ok) {
-      const text = await response.text();
-      return res.status(500).json({ error: text });
+    if (isUnexpected(response)) {
+      return res.status(500).json({ error: response.body.error });
     }
 
-    const data = await response.json();
-    const result = data.choices?.[0]?.message?.content?.trim() || "";
+    const result = response.body.choices?.[0]?.message?.content?.trim() || "";
 
     const correctnessMatch = result.match(/正誤: (.+)/);
     const explanationMatch = result.match(/解説: ([\s\S]+)/);
-    
+
     const correctness = correctnessMatch ? correctnessMatch[1].trim() : "";
     const explanation = explanationMatch ? explanationMatch[1].trim() : "";
 
