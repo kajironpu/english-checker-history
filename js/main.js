@@ -13,7 +13,7 @@ async function loadQuiz() {
 
   try {
     // APIを呼び出して、AIにクイズを生成させる
-    const response = await fetch("/api/generate-quiz");
+    const response = await fetch("/api/check");
     if (!response.ok) {
       throw new Error("APIからクイズを取得できませんでした。");
     }
