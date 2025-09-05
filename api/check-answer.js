@@ -1,9 +1,7 @@
 // api/check-answer.js
-const { AzureAIInferenceClient } = require("@azure/ai-inference");
-const { AzureKeyCredential } = require("@azure/core-auth");
+const { OpenAI } = require('openai');
 
 module.exports = async function (req, res) {
-  // CORS対応
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -13,29 +11,20 @@ module.exports = async function (req, res) {
   }
 
   const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-  const endpoint = "https://models.inference.ai.azure.com"; // 正しいエンドポイント
+  const baseURL = "https://models.inference.ai.azure.com";
   const modelName = "Phi-3-medium";
 
-  // 環境変数チェック
   if (!GITHUB_TOKEN) {
-    console.error("GITHUB_TOKEN が設定されていません");
     return res.status(500).json({ error: "GITHUB_TOKEN が設定されていません" });
   }
 
-  // リクエストボディの解析
   let body;
   try {
-    if (typeof req.body === 'string') {
-      body = JSON.parse(req.body);
-    } else {
-      body = req.body;
-    }
+    body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
   } catch (e) {
-    console.error("JSON解析エラー:", e.message);
     return res.status(400).json({ error: "無効なJSON", details: e.message });
   }
 
-  // 必要なフィールドの検証
   const { userText, question, correctAnswer } = body;
   if (!userText || !question || !correctAnswer) {
     return res.status(400).json({ 
@@ -56,15 +45,12 @@ module.exports = async function (req, res) {
 `;
 
   try {
-    // 新しい SDK でのクライアント作成
-    const client = new AzureAIInferenceClient(
-      endpoint,
-      new AzureKeyCredential(GITHUB_TOKEN)
-    );
+    const openai = new OpenAI({
+      baseURL,
+      apiKey: GITHUB_TOKEN,
+    });
 
-    console.log("API呼び出し開始:", new Date().toISOString());
-
-    const response = await client.getCompletions({
+    const response = await openai.chat.completions.create({
       model: modelName,
       messages: [
         { 
@@ -74,20 +60,11 @@ module.exports = async function (req, res) {
         { role: "user", content: prompt }
       ],
       temperature: 0.5,
-      maxTokens: 300
+      max_tokens: 300
     });
 
-    console.log("API呼び出し完了");
-
-    if (!response.choices || response.choices.length === 0) {
-      console.error("空のレスポンス:", response);
-      return res.status(500).json({ error: "AIモデルからの応答が空です" });
-    }
-
     const result = response.choices[0].message.content;
-    console.log("AI応答:", result);
 
-    // 正誤と解説の抽出
     const correctnessMatch = result.match(/正誤[:：]\s*(.+)/);
     const explanationMatch = result.match(/解説[:：]\s*([\s\S]+)/);
     
@@ -101,26 +78,15 @@ module.exports = async function (req, res) {
     });
 
   } catch (err) {
-    console.error("サーバーエラー:", err);
+    console.error("AIエラー:", err);
     
-    if (err.code === 'ENOTFOUND' || err.code === 'ECONNRESET') {
-      return res.status(503).json({ 
-        error: "ネットワークエラー", 
-        message: "APIサーバーに接続できません。" 
-      });
+    if (err.status === 401) {
+      return res.status(401).json({ error: "認証エラー", message: "トークンが無効です" });
     }
     
-    if (err.statusCode === 401 || err.status === 401) {
-      return res.status(401).json({ 
-        error: "認証エラー", 
-        message: "GITHUB_TOKENが無効です" 
-      });
-    }
-
     return res.status(500).json({ 
-      error: "内部エラー", 
-      message: err.message,
-      code: err.code
+      error: "AI呼び出し失敗", 
+      message: err.message 
     });
   }
 };
